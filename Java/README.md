@@ -4,7 +4,7 @@
 
 This folder includes my notes, exercises, and mini-experiments in Java — from basic syntax to object-oriented programming and common coding patterns.
 
-
+This is not intended as a software project repo, but rather a clean record of foundational Java practice.
 
 ## Topics Covered
 
