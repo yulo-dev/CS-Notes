@@ -1,0 +1,1 @@
+✨ A hands-on series where I implement core machine learning models from scratch using only NumPy, to deeply understand how they work under the hood. Inspired by the Deep Learning Specialization (Coursera), but completely rewritten from the ground up.
