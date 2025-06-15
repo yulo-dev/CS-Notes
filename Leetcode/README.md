@@ -1,6 +1,6 @@
 # LeetCode Notes
 
-✨ Hi, I'm Noelle! I'm currently learning software engineering and preparing for internships in SWE and applied ML roles.
+✨ Hi, I'm Noelle! I'm currently learning software engineering and preparing for internships in SWE.
 
 This folder contains my personal notes and solutions for LeetCode problems, written in Python.
 
