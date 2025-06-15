@@ -1,6 +1,6 @@
 # Leetcode 0046 - Permutations
 
-## ✅ UMPIRE
+## ☀️ UMPIRE
 - **Understand**: Return all possible permutations of the list `nums` (distinct integers)
 - **Match**: Input is a list → suitable for backtracking
 - **Plan**: Use DFS with backtracking and visited tracking
@@ -10,7 +10,7 @@
 
 ---
 
-## ✅ Metadata
+## ☀️ Metadata
 - **Appears In**: Grind75
 - **Pattern**: Backtracking (#7)
 - **Data Structure**: Array, Boolean tracking list
@@ -19,7 +19,7 @@
 
 ---
 
-## ✅ Solution Code
+## ☀️ Solution Code
 
 ```python
 class Solution:
@@ -45,39 +45,39 @@ class Solution:
 
 ---
 
-## ✅ Trace (Interview-style Simulation)
+## ☀️ Trace
 
 ```
 backtrack([])
 → i=0: use 1 → path=[1]
   → i=1: use 2 → path=[1,2]
-    → i=2: use 3 → path=[1,2,3] → ✅ add to res
+    → i=2: use 3 → path=[1,2,3] → ☀️ add to res
     ← backtrack: pop 3
   ← backtrack: pop 2
   → i=2: use 3 → path=[1,3]
-    → i=1: use 2 → path=[1,3,2] → ✅ add to res
+    → i=1: use 2 → path=[1,3,2] → ☀️ add to res
     ← backtrack: pop 2
   ← backtrack: pop 3
 ← backtrack: pop 1
 
 → i=1: use 2 → path=[2]
   → i=0: use 1 → path=[2,1]
-    → i=2: use 3 → path=[2,1,3] → ✅ add to res
+    → i=2: use 3 → path=[2,1,3] → ☀️ add to res
     ← backtrack: pop 3
   ← backtrack: pop 1
   → i=2: use 3 → path=[2,3]
-    → i=0: use 1 → path=[2,3,1] → ✅ add to res
+    → i=0: use 1 → path=[2,3,1] → ☀️ add to res
     ← backtrack: pop 1
   ← backtrack: pop 3
 ← backtrack: pop 2
 
 → i=2: use 3 → path=[3]
   → i=0: use 1 → path=[3,1]
-    → i=1: use 2 → path=[3,1,2] → ✅ add to res
+    → i=1: use 2 → path=[3,1,2] → ☀️ add to res
     ← backtrack: pop 2
   ← backtrack: pop 1
   → i=1: use 2 → path=[3,2]
-    → i=0: use 1 → path=[3,2,1] → ✅ add to res
+    → i=0: use 1 → path=[3,2,1] → ☀️ add to res
     ← backtrack: pop 1
   ← backtrack: pop 2
 ← backtrack: pop 3
@@ -87,7 +87,7 @@ backtrack([])
 
 ---
 
-## ✅ Line-by-line Typing Script (English)
+## ☀️ Line-by-line Typing Script 
 
 - I’m defining the permute function, which returns all permutations of the input list nums.
 - I’m initializing res as an empty list to collect all valid permutations.
