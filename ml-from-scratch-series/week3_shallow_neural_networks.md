@@ -1,13 +1,13 @@
-# ☀️ Week 3: Neural Networks Basics — Deep Learning Specialization
+# Week 3: Neural Networks Basics — Deep Learning Specialization
 
-## ☀️ 1. Overview
+## 1. Overview
 
 This week focuses on implementing a simple neural network from scratch and understanding forward and backward propagation. 
 The neural network generalizes logistic regression by stacking layers of linear and non-linear transformations.
 
 
 
-## ☀️ 2. Key Concepts
+## 2. Key Concepts
 
 ### From Logistic Regression to Neural Networks
 
@@ -30,7 +30,7 @@ The neural network generalizes logistic regression by stacking layers of linear 
 
 
 
-## ☀️ 3. Vectorization for m Examples
+## 3. Vectorization for m Examples
 
 Instead of computing each training example individually, we use matrix operations to process all examples at once.
 
@@ -46,7 +46,7 @@ A[2] = sigmoid(Z[2])    # shape: (1, m)
 
 
 
-## ☀️ 4. Activation Functions
+## 4. Activation Functions
 
 | Function   | Formula                           | Output Range | Derivative    |
 | ---------- | --------------------------------- | ------------ | ------------- |
@@ -60,7 +60,7 @@ A[2] = sigmoid(Z[2])    # shape: (1, m)
 
 
 
-## ☀️ 5. Backpropagation (Vectorized)
+## 5. Backpropagation (Vectorized)
 
 ```python
 # Output layer
@@ -79,7 +79,7 @@ db[1] = (1/m) * np.sum(dZ[1], axis=1, keepdims=True)
 
 
 
-## ☀️ 6. Weight Initialization
+## 6. Weight Initialization
 
 - Don't initialize weights to zero — leads to symmetry problems
 - Use small random values: `W = np.random.randn(...) * 0.01`
