@@ -1,11 +1,11 @@
-# ☀️ Week 2: Logistic Regression as a Neural Network / Python and Vectorization
+# Week 2: Logistic Regression as a Neural Network / Python and Vectorization
 
-## ☀️ 1. Overview
+## 1. Overview
 
 This week introduces **logistic regression** from the perspective of building a neural network. 
 It covers forward propagation, loss functions, gradients, and how to implement them in vectorized Python code.
 
-## ☀️ 2. Key Concepts
+## 2. Key Concepts
 
 ### Logistic Regression
 
@@ -18,7 +18,7 @@ It covers forward propagation, loss functions, gradients, and how to implement t
 - For a single example: \(L(\hat{y}, y) = -y \log(\hat{y}) - (1 - y) \log(1 - \hat{y})\)
 - Cost function (avg. over m examples): \(J(w, b) = \frac{1}{m} \sum_{i=1}^m L(\hat{y}^{(i)}, y^{(i)})\)
 
-## ☀️ 3. Forward and Backward Propagation
+## 3. Forward and Backward Propagation
 
 ### Forward Prop
 
@@ -37,7 +37,7 @@ dZ = A - Y
 
 ---
 
-## ☀️ 4. Optimization Loop
+## 4. Optimization Loop
 
 ```python
 for i in range(num_iterations):
@@ -56,7 +56,7 @@ for i in range(num_iterations):
     b -= alpha * db
 ```
 
-## ☀️ 5. Vectorization Benefits
+## 5. Vectorization Benefits
 
 - Speeds up computation using NumPy broadcasting
 - Avoids explicit for-loops over training examples
