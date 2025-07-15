@@ -1,10 +1,10 @@
 # LeetCode Notes
 
-✨ Hi, I'm Noelle! I'm currently learning software engineering and preparing for internships in SWE.
+✨ Hi, I'm Yulo! I'm currently learning software engineering and preparing for internships in SWE.
 
 This folder contains my personal notes and solutions for LeetCode problems, written in Python.
 
-To stay focused and consistent, I'm following the **UMPIRE framework** (from [CodePath](https://github.com/CodePath))) to structure my approach, especially for interview preparation.
+To stay focused and consistent, I'm following the **UMPIRE framework** (from [CodePath](https://github.com/CodePath)) to structure my approach, especially for interview preparation.
 
 
 
@@ -37,4 +37,4 @@ To stay focused and consistent, I'm following the **UMPIRE framework** (from [Co
 
 ---
 
-🛠 Maintained by Noelle Lo
+🛠 Maintained by Yulo L.
