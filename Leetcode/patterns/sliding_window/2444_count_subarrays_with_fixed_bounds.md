@@ -69,15 +69,6 @@ class Solution:
 
         return answer
 ```
-
----
-
-## ☀️ Coding Walkthrough Script
-1. Traverse each number in `nums`.
-2. Update the last index where `minK`, `maxK`, and any invalid number appeared.
-3. At each step, find how many valid subarrays end at index `i` by checking how far back we can go while keeping `minK` and `maxK` present and avoiding invalid numbers.
-4. Add this count to the result.
-
 ---
 
 ## ☀️ Complexity Comparison
@@ -101,3 +92,40 @@ class Solution:
 - **Algorithms**:
   1. Sliding Window + Index Tracking (O(n), recommended)
   2. Brute Force (O(n²), for clarity only)
+
+---
+## ☀️ Coding Walkthrough Script
+
+For this problem, I need to count all subarrays whose minimum equals `minK` and maximum equals `maxK`.  
+To do it efficiently in one pass, I track three indices as I traverse the array:  
+  - `minPos`: the last index where `minK` occurred,
+  - `maxPos`: the last index where `maxK` occurred,
+  - `leftBound`: the last index where any number was out of range `[minK, maxK]`.  
+ 
+Why do I need these three?  
+Because to form a valid subarray ending at index `i`, I must know:  
+ - where both `minK` and `maxK` have appeared, and  
+ - how far back I can start without including invalid numbers.  
+
+I initialize all of them to `-1` before starting.  
+That means:  
+  - initially, I haven’t seen `minK` or `maxK`, so `minPos` and `maxPos` are `-1`;  
+ - and I treat the region before the array start as an implicit out-of-range position, so `leftBound` is `-1`.  
+   
+This initialization lets me use one formula for every index without extra if-statements.  
+If one of the required values hasn’t appeared yet, then `min(minPos, maxPos)` will still be `-1`,  
+so the count for that position naturally becomes zero.  
+
+The key formula for counting valid subarrays ending at index `i` is:  
+ ```python
+result += max(0, min(minPos, maxPos) - leftBound)
+```
+
+Why does it work?  
+ - `min(minPos, maxPos)` is the earliest index where both required numbers exist in the subarray.  
+ - `leftBound` marks the last invalid element; we can’t start before it.  
+ - The difference gives us how many valid start indices there are for subarrays ending at `i`.
+
+If one value is missing, the result would be negative, so we clamp it to zero with `max(0, …)`.  
+Finally, I scan the entire array once, updating these three variables and applying this formula at each step.  
+This gives O(n) time complexity and O(1) extra space.
