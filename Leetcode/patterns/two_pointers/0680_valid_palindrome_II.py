@@ -1,3 +1,5 @@
+# method 1: space complexity O(n) 
+
 class Solution:
     def validPalindrome(self, s: str) -> bool:
         # Helper function to check if a substring is a palindrome
@@ -20,4 +22,28 @@ class Solution:
             right -= 1
 
         # If no mismatch found or fixed by one deletion, it is a palindrome
+        return True
+
+# method 2: space complexity O(1) 
+
+class Solution:
+    def validPalindrome(self, s: str) -> bool:
+        # Helper function: check if s[l:r] is palindrome (inclusive)
+        def is_palindrome_range(l: int, r: int) -> bool:
+            while l < r:
+                if s[l] != s[r]:
+                    return False
+                l += 1
+                r -= 1
+            return True
+
+        left, right = 0, len(s) - 1
+
+        while left < right:
+            if s[left] != s[right]:
+                # Skip left or skip right, check directly without slicing
+                return is_palindrome_range(left + 1, right) or is_palindrome_range(left, right - 1)
+            left += 1
+            right -= 1
+
         return True
