@@ -27,6 +27,8 @@ class Solution:
             # after the last invalid value is min(minPos, maxPos)
             # All valid subarrays ending at index i start after leftBound
             # and before or at min(minPos, maxPos)
-            answer += max(0, min(minPos, maxPos) - leftBound)
-
+            
+            validCount = max(0, min(minPos, maxPos) - leftBound)
+            answer += validCount
+            
         return answer
