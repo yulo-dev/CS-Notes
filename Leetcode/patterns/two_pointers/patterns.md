@@ -246,5 +246,6 @@ while mid <= high:
 
 ## Notes
 - Two Pointers is a technique family: Opposite Ends, Fast & Slow, Merge Sync, Pointer Offset, Greedy Matching, Sorting + Pair Sums, String Processing, Partitioning.
+- The two pointers pattern focuses on comparing data values, whereas the fast and slow pointers method is typically used to analyze the structure or properties of the data.
 - Many Sliding Window problems (like Longest Substring Without Repeating Characters) extend from Two Pointers but include additional state (set/map).
 - Recognize input type, goal, and keywords to quickly map to patterns during interviews.
