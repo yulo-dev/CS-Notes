@@ -1,110 +1,80 @@
-# Leetcode 287. Find the Duplicate Number
-Tags: Array, Two Pointers, Binary Search, Cycle Detection
+# Leetcode 876. Middle of the Linked List
+
+**Tags:** Linked List, Two Pointers
 
 ---
 
 ## ☀️ UMPIRE
 
 ### U — Understand
-**Problem**:  
-Given an array `nums` containing `n + 1` integers where each integer is in `[1, n]`.  
-There is only one repeated number, but it can be repeated multiple times.  
-Return the duplicate number **without modifying the array** and using only **O(1) extra space**.
+- Given the head of a singly linked list, return the **middle node**.
+- If there are two middle nodes (even length), return the **second** one.
 
-**Constraints**:
-- `len(nums) = n + 1`, numbers in `[1, n]`.
-- Exactly one duplicate, but may appear more than twice.
-- Cannot modify the input array.
-
-**Clarifying Questions**:
-- Is there always exactly one duplicate? → Yes.
-- Can duplicate appear more than twice? → Yes, still return that duplicate value.
-- Can we use extra data structures? → No, must be O(1) space.
+**Clarifying Questions:**
+- Can the list be empty? → Yes, return None.
+- If there is one node? → Return that node itself.
+- Do we modify the list? → No, just return the node reference.
 
 ---
 
 ### M — Match
-**Patterns**:
-1. **Brute force check pairs** → O(n²)
-2. **HashSet** → O(n) time, O(n) space
-3. **Sorting** → O(n log n), modifies input (not allowed)
-4. **Cycle detection (Floyd’s Tortoise & Hare)** → O(n) time, O(1) space (optimal)
-
-**Why Cycle Detection?**
-- Because values are in `[1, n]` and array length is `n+1`,  
-  we can treat each index as a node and `nums[i]` as a pointer to next node:
-  ```
-  i -> nums[i]
-  ```
-- Duplicate numbers create a **cycle** in this "pointer graph".
-- The duplicate number is exactly the **entry point of the cycle**.
+- Linked List problem → common patterns:
+  - **Count length and re-traverse** (basic, two passes)
+  - **Fast & slow pointers** (optimal, one pass)
 
 ---
 
 ### P — Plan
 
-#### Approach 1: Hash Set (Basic)
-1. Initialize empty set.
-2. Iterate through `nums`:
-   - If `num` already in set → return it.
-   - Else add to set.
+#### Approach 1: Count Length (Basic)
+1. Traverse the linked list to count its length `L`.
+2. Compute middle index `L // 2`.
+3. Traverse again to the middle node.
+4. Return it.
 
-#### Approach 2: Sorting (If modifying allowed)
-1. Sort `nums`.
-2. Scan for consecutive duplicate elements.
-
-#### Approach 3: Floyd’s Cycle Detection (Optimal)
-1. Phase 1: Use two pointers:
-   - slow = nums[slow]
-   - fast = nums[nums[fast]]
-   - Stop when slow == fast (guaranteed inside cycle).
-2. Phase 2: Reset one pointer to index 0:
-   - Move both pointers one step each.
-   - Next meeting point = cycle entrance = duplicate number.
+#### Approach 2: Fast & Slow Pointers (Optimal)
+1. Initialize two pointers slow and fast at head.
+2. Move slow by one step, fast by two steps.
+3. When fast reaches end (`None`), slow is at the middle.
+4. Return slow.
 
 ---
 
 ### I — Implement
 
-#### Approach 1: Hash Set
+#### Approach 1: Count Length
 ```python
 class Solution:
-    def findDuplicate(self, nums: List[int]) -> int:
-        seen = set()
-        for num in nums:
-            if num in seen:
-                return num
-            seen.add(num)
+    def middleNode(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        # Step 1: count length
+        length = 0
+        current = head
+        while current:
+            length += 1
+            current = current.next
+        
+        # Step 2: move to middle node
+        middle_index = length // 2
+        current = head
+        for _ in range(middle_index):
+            current = current.next
+        
+        return current
 ```
 
-#### Approach 2: Sorting
+#### Approach 2: Fast & Slow Pointers (Recommended)
 ```python
 class Solution:
-    def findDuplicate(self, nums: List[int]) -> int:
-        nums.sort()  # Not allowed in problem but good to mention
-        for i in range(1, len(nums)):
-            if nums[i] == nums[i-1]:
-                return nums[i]
-```
-
-#### Approach 3: Floyd’s Cycle Detection (Optimal)
-```python
-class Solution:
-    def findDuplicate(self, nums: List[int]) -> int:
-        # Phase 1: detect intersection
-        slow = 0
-        fast = 0
-        while True:
-            slow = nums[slow]            # move one step
-            fast = nums[nums[fast]]      # move two steps
-            if slow == fast:
-                break
-
-        # Phase 2: find cycle entrance
-        slow = 0
-        while slow != fast:
-            slow = nums[slow]
-            fast = nums[fast]
+    def middleNode(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        # Initialize slow and fast pointers
+        slow = fast = head
+        
+        # Move fast by two steps and slow by one step
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+        
+        # When fast reaches the end, slow is at the middle
         return slow
 ```
 
@@ -113,27 +83,35 @@ class Solution:
 ### R — Review
 
 #### Time Complexity
-- HashSet → O(n)
-- Sorting → O(n log n)
-- Floyd → O(n)
+- Count length → O(n) (two traversals)
+- Fast & slow → O(n) (one traversal)
+- Array → O(n)
 
 #### Space Complexity
-- HashSet → O(n)
-- Sorting → O(1) extra but modifies input
-- Floyd → O(1)
-
-**Why Floyd is optimal?**
-- Satisfies problem constraints (no extra space, no array modification).
-- Runs in linear time.
+- Count length → O(1)
+- Fast & slow → O(1)
+- Array → O(n)
 
 ---
 
 ### E — Evaluate
-- **Correctness**: Works for arrays with multiple duplicates but only one unique duplicate value.
-- **Why two phases?**:
-  - Phase 1 ensures pointers are inside the cycle.
-  - Phase 2 finds the cycle entry, which equals the duplicate number.
-- **Common mistakes**:
-  - Mixing index and value concepts.
-  - Forgetting to reset one pointer in phase 2.
-  - Assuming first meeting is directly the answer.
+
+#### Why fast & slow pointer?
+- Only needs one pass and constant extra space.
+- Automatically returns the **second** middle node in even-length lists.
+
+#### Why does count length need two passes?
+- Linked List **cannot directly access length or index** like arrays.
+- Must first traverse to count length, then traverse again to reach middle.
+
+#### Other solutions
+- Array method is straightforward but wastes O(n) memory.
+- Recursion works but is not practical due to call stack limits.
+
+---
+
+## ☀️ Script
+
+The simplest way is to first traverse the list to count its length, then traverse again to the middle — O(n) time, O(1) space, but requires two passes.  
+A better approach is to use two pointers: slow moves one step and fast moves two steps. When fast reaches the end, slow is at the middle. This naturally returns the second middle node for even-length lists.  
+Both approaches are O(n) time and O(1) space, but the fast & slow pointer method is more efficient since it only needs one pass. Another possible solution is storing nodes in an array, but that takes O(n) space.
