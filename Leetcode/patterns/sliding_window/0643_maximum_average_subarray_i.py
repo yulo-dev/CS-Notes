@@ -21,7 +21,7 @@ class Solution:
 # solution 2: Optimized Sliding Window version 
 # Only one full sum is calculated (the first window).
 # After that, we only adjust the sum by adding the new rightmost element and subtracting the old leftmost one.
-# Time Complexity: O(n) 
+# Time Complexity: O(n): it's calculated from O(k + (n - k)) = O(n)
 # space: O(1)
 
 class Solution:
