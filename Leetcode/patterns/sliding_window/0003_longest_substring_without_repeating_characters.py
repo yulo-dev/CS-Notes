@@ -46,15 +46,20 @@ class Solution:
 
 class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
+        # HashMap to store the last seen index of each character
         char_index = {}
-        left = 0
-        max_len = 0
+        left = 0  # Left pointer of the sliding window
+        max_len = 0  # Track the maximum length of substring without repeating characters
 
         for right in range(len(s)):
+            # If character was seen and is inside the current window
             if s[right] in char_index and char_index[s[right]] >= left:
+                # Move the left pointer to the right of the last occurrence
                 left = char_index[s[right]] + 1
+
+            # Update the character's last seen index
             char_index[s[right]] = right
+            # Update the maximum length found so far
             max_len = max(max_len, right - left + 1)
+
         return max_len
-
-
