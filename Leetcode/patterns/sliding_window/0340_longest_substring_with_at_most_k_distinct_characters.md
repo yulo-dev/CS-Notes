@@ -160,9 +160,8 @@ class Solution:
 ---
 
 ## ☀️ Script
-We want the longest substring with at most K distinct characters.  
-The natural approach is a sliding window: expand the right boundary to include characters, track counts or last indices, and shrink the left boundary when we exceed K distinct chars.  
-> In Python, I can use a Counter for general k, or a last-index map for small k to jump left more efficiently."
+I’ll solve this with a sliding window because the problem asks for the longest contiguous substring with at most K distinct characters. That’s a monotonic condition — once a window becomes invalid, making it smaller can restore validity.
+To efficiently decide which character to drop when we exceed K distinct characters, I’ll store a dictionary mapping each character to its last occurrence index inside the current window. If the number of distinct characters exceeds K, I find the character whose last occurrence is farthest to the left, drop it from the dictionary, and jump the left pointer past it. This lets us remove an entire block of invalid positions in O(1) time per removal, instead of shrinking one step at a time.
 
 ---
 
