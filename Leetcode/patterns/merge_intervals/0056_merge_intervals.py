@@ -53,7 +53,9 @@ class Solution:
 
 # solution 2: Merge Intervals (sort + single pass)
 # time: O(nlogn) 
-# space: O(n)
+# space: O(1)
+# If we exclude the output space, the auxiliary space is O(1);
+# if we include the output, it’s O(n) in the worst case for all approaches.
 
 class Solution:
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
