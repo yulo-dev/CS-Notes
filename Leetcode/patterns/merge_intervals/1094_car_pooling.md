@@ -32,7 +32,7 @@
 
 ---
 
-## ☀️ Solution 1: Difference Array (Beginner)
+## ☀️ Solution 1: Difference Array 
 
 ```python
 class Solution:
