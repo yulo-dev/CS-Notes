@@ -8,81 +8,76 @@
   Determine if it is possible to complete all trips without exceeding capacity at any point.
 
 - **Match**:  
-  This is a **Prefix Sum / Difference Array** problem because the location range is small (0 ≤ location ≤ 1000).  
-  We can simulate passenger changes at each location without explicitly merging intervals.
+  This can be solved by simulating passenger changes along the route.  
+  Approaches vary in efficiency depending on how we model the problem:
+  1. Brute force simulate each location (slowest).
+  2. Use a **Min-Heap** to track active trips (general & scalable).
+  3. Use a **Difference Array** if location range is small (fastest for this problem).
 
-- **Plan** (Difference Array):  
-  1. Create a fixed-size array `diff` of length 1001 (indices 0–1000).  
-  2. For each trip `(ppl, start, end)`:
-     - `diff[start] += ppl` → pick up passengers
-     - `diff[end] -= ppl` → drop off passengers
-  3. Traverse `diff` to compute current passengers (`curr += diff[i]`).  
-     - If `curr > capacity`, return `False`.
-  4. If the loop finishes, return `True`.
-
-- **Implement**:  
-  See Solution 1 (Beginner) and Solution 2 (Optimized).
+- **Plan**:  
+  1. **Brute Force**: simulate passenger count for every location per trip.  
+  2. **Min-Heap**: sort by start location, pop ended trips, push new trips.  
+  3. **Difference Array**: mark +p at start, -p at end, prefix-sum once.
 
 - **Review**:  
   Test with edge cases: overlapping trips, exact capacity, capacity exceeded at start, single trip larger than capacity.
 
 - **Evaluate**:  
-  - Time: O(n + L) where L ≤ 1000 (treated as O(1) here)
-  - Space: O(L) for the difference array (also O(1) here due to fixed limit).
+  | Approach       | Time Complexity   | Space Complexity |
+  |----------------|-------------------|------------------|
+  | Brute Force    | O(n * L)          | O(L)             |
+  | Min-Heap       | O(n log n)        | O(n)             |
+  | Diff Array     | O(n + L)          | O(L)             |
+  Here L ≤ 1000 in this problem.
 
 ---
 
-## ☀️ Solution 1: Difference Array 
+## ☀️ Solution 1: Brute Force (Slowest)
 
 ```python
 class Solution:
     def carPooling(self, trips: List[List[int]], capacity: int) -> bool:
-        # Difference array for locations 0..1000
-        diff = [0] * 1001
+        car = [0] * 1001  # passenger count at each location
 
-        # Apply changes for each trip
-        for ppl, start, end in trips:
-            diff[start] += ppl
-            diff[end] -= ppl
-
-        # Compute prefix sum and check capacity
-        curr = 0
-        for i in range(1001):
-            curr += diff[i]
-            if curr > capacity:
+        for p, s, e in trips:
+            if p > capacity:
                 return False
-        
+            for x in range(s, e):
+                car[x] += p
+                if car[x] > capacity:
+                    return False
+
         return True
 ```
 
 **Complexity**  
-- Time: O(n + 1000) → O(n)  
-- Space: O(1001) → O(1) fixed
+- Time: O(n * 1000) → O(n) here since L=1000 fixed  
+- Space: O(1000) → O(1) fixed  
+- Pros: Very easy to implement  
+- Cons: Inefficient for large ranges
 
 ---
 
-## ☀️ Solution 2: Heap + Sorting (Handles Large Ranges)
+## ☀️ Solution 2: Min-Heap by End (General & Intuitive)
 
 ```python
 import heapq
 
 class Solution:
     def carPooling(self, trips: List[List[int]], capacity: int) -> bool:
-        # Sort trips by start location
-        trips.sort(key=lambda x: x[1])
+        trips.sort(key=lambda x: x[1])  # sort by start location
         curr = 0
-        heap = []  # min-heap for (end, ppl)
+        heap = []  # min-heap for (end, passengers)
 
-        for ppl, start, end in trips:
-            # Remove trips that have ended
-            while heap and heap[0][0] <= start:
+        for p, s, e in trips:
+            # Drop off passengers for trips ending at/before s
+            while heap and heap[0][0] <= s:
                 curr -= heapq.heappop(heap)[1]
 
-            # Add current trip
-            heapq.heappush(heap, (end, ppl))
-            curr += ppl
+            # Pick up current trip
+            heapq.heappush(heap, (e, p))
+            curr += p
 
-            # Check capacity
             if curr > capacity:
                 return False
 
@@ -91,25 +86,59 @@ class Solution:
 
 **Complexity**  
 - Time: O(n log n)  
-- Space: O(n) for heap
+- Space: O(n) for heap  
+- Pros: Works well when location range is large  
+- Cons: More complex than brute force for small ranges
+
+---
+
+## ☀️ Solution 3: Difference Array + Prefix Sum (Fastest Here)
+
+```python
+class Solution:
+    def carPooling(self, trips: List[List[int]], capacity: int) -> bool:
+        diff = [0] * 1001  # difference array for locations 0..1000
+
+        for p, s, e in trips:
+            if p > capacity:
+                return False
+            diff[s] += p
+            diff[e] -= p  # passengers get off at e
+
+        curr = 0
+        for i in range(1001):
+            curr += diff[i]
+            if curr > capacity:
+                return False
+
+        return True
+```
+
+**Complexity**  
+- Time: O(n + 1000) → O(n)  
+- Space: O(1001) → O(1) fixed  
+- Pros: Short, fast, optimal for bounded ranges  
+- Cons: Only optimal if location range is small
 
 ---
 
 ## ☀️ Tags  
 - Array  
+- Simulation  
 - Prefix Sum / Difference Array  
 - Heap (Priority Queue)  
-- Simulation  
 - Sorting
 
 ## ☀️ Data Structure  
-- **Primary**: Fixed-size list (`diff`) for difference array  
-- **Alternative**: Min-heap for ongoing trips
+- **Brute Force**: Array of size L for passenger counts  
+- **Heap**: Min-heap to store active trips by end location  
+- **Difference Array**: Fixed-size list for passenger changes
+
+---
 
 ## ☀️ Algorithm Summary  
 1. If location range is small → use **difference array** for O(n) simulation.  
 2. If location range is large → use **heap** to manage active trips.
-
 
 ---
 
