@@ -1,11 +1,40 @@
-# solution 1: Min-Heap by end
-# time: O(n log n)
-# space: O(n)
+# solution 1: Brute-Force Range Fill (location-by-location simulation)
+# time: O(n * L), where L <= 1000 (treated as O(1) here); slowest
+# space: O(L)
 
 from typing import List
 import heapq
 
-class Solution:
+class SolutionBruteRange:
+    def carPooling(self, trips: List[List[int]], capacity: int) -> bool:
+        """
+        Simulate passenger counts at each location (0..1000).
+        For each trip [p, s, e) (half-open), add p to every point in [s, e-1].
+        If any location exceeds capacity, return False; otherwise True.
+
+        Time:  O(n * L), where L is the location range (<= 1000 in this problem)
+        Space: O(L)
+        """
+        car = [0] * 1001  # passenger counts at each location
+
+        for p, s, e in trips:
+            # Early rejection: one trip alone exceeds capacity
+            if p > capacity:
+                return False
+            # Fill the range [s, e) one by one
+            for x in range(s, e):
+                car[x] += p
+                if car[x] > capacity:
+                    return False
+
+        return True
+
+
+# solution 2: Min-Heap by end
+# time: O(n log n)
+# space: O(n)
+
+class SolutionHeap:
     def carPooling(self, trips: List[List[int]], capacity: int) -> bool:
         """
         Min-heap by 'end' (general & intuitive):
@@ -41,13 +70,11 @@ class Solution:
         return True
 
 
-# solution 2: Difference Array + Prefix Sum
-# time: O(n + L), where L <= 1000 (treated as O(1) here)
+# solution 3: Difference Array + Prefix Sum (recommend)
+# time: O(n + L), where L <= 1000 (treated as O(1) here); fastest in this problem
 # space: O(L), where L <= 1000 (treated as O(1) here)
 
-from typing import List
-
-class Solution:
+class SolutionDiffArray:
     def carPooling(self, trips: List[List[int]], capacity: int) -> bool:
         """
         Difference array over location axis [0..1000]:
@@ -76,5 +103,3 @@ class Solution:
                 return False
 
         return True
-
-
