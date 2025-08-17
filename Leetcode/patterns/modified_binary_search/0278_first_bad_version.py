@@ -156,12 +156,6 @@ Key Insights and Takeaways:
    - We're finding the first position where condition becomes true
    - Binary search efficiently narrows down to the boundary
 
-5. Interview Strategy:
-   - Start with Solution 1 to show understanding
-   - Mention API call minimization requirement
-   - Implement Solution 2 as optimal approach
-   - Explain the boundary search logic clearly
-
 6. Common Mistakes to Avoid:
    - Don't use different templates inconsistently
    - Remember to handle integer overflow with (right - left) // 2
