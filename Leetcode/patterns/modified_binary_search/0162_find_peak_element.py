@@ -54,40 +54,10 @@ class Solution1:
         return 0
 
 
-# Solution 2: Binary Search with while left <= right (Boundary Check Approach)
+# Solution 2: Binary Search with while left < right (Elegant Approach)
 # Time: O(log n) → Binary search eliminates half search space each iteration
 # Space: O(1) → Only using constant extra space
 class Solution2:
-    def findPeakElement(self, nums: List[int]) -> int:
-        """
-        Approach: Binary search with explicit boundary checking
-        
-        This approach uses the familiar while left <= right template.
-        Key insight: When nums[mid] > nums[mid + 1], peak exists on left side (including mid).
-        We use boundary checking to avoid array index out of bounds.
-        """
-        left, right = 0, len(nums) - 1
-        result = 0  # Store potential peak index
-        
-        while left <= right:
-            mid = left + (right - left) // 2
-            
-            # Boundary check to avoid index out of bounds
-            if mid == len(nums) - 1 or nums[mid] > nums[mid + 1]:
-                # Peak condition satisfied or at last element
-                result = mid  # Record this potential peak
-                right = mid - 1  # Continue searching left for other peaks
-            else:
-                # nums[mid] <= nums[mid + 1], peak must be on right side
-                left = mid + 1
-        
-        return result
-
-
-# Solution 3: Binary Search with while left < right (Elegant Approach)
-# Time: O(log n) → Binary search eliminates half search space each iteration
-# Space: O(1) → Only using constant extra space
-class Solution3:
     def findPeakElement(self, nums: List[int]) -> int:
         """
         Approach: Binary search with natural boundary handling
@@ -112,7 +82,6 @@ class Solution3:
         return left
 
 
-
 """
 Key Insights and Takeaways:
 
@@ -127,20 +96,13 @@ Key Insights and Takeaways:
    - If nums[mid] <= nums[mid + 1]: peak on right side (excluding mid)
 
 3. Template Choice:
-   - Solution 2: Familiar while left <= right with boundary checking
-   - Solution 3: Elegant while left < right with natural handling
+   - Solution 2: Elegant while left < right with natural handling
    - Both are correct, choice depends on preference
 
 4. Why This Works:
    - Array conceptually has -∞ at both ends
    - This guarantees at least one peak exists
    - Binary search efficiently narrows down to any peak
-
-5. Interview Strategy:
-   - Start with Solution 1 to show understanding
-   - Mention O(log n) requirement
-   - Implement either Solution 2 or 3 based on comfort
-   - Explain the peak property logic clearly
 
 6. Common Mistakes to Avoid:
    - Don't assume array is sorted (it's not!)
@@ -151,9 +113,4 @@ Key Insights and Takeaways:
    - LeetCode 852: Peak Index in a Mountain Array
    - LeetCode 1095: Find in Mountain Array
    - Problems involving local extrema in arrays
-
-8. Template Decision:
-   - Use Solution 2 if you prefer consistent while left <= right
-   - Use Solution 3 if you want cleaner boundary handling
-   - Both approaches are interview-ready
 """
