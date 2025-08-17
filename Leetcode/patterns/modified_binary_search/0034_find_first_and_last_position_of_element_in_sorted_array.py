@@ -178,12 +178,6 @@ Key Insights and Takeaways:
    - LeetCode 35 has no duplicates, so standard binary search works
    - LeetCode 34 has duplicates, requiring boundary search template
 
-5. Interview Strategy:
-   - Start with Solution 1 to show understanding
-   - Mention O(log n) requirement
-   - Implement Solution 2 (your approach) as it's most intuitive
-   - Can mention Solution 4 for elegance if time permits
-
 6. Common Mistakes to Avoid:
    - Don't expand linearly from found position (makes it O(n))
    - Remember to handle edge cases (empty array, target not found)
