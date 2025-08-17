@@ -2,162 +2,219 @@
 
 ## ☀️ UMPIRE
 
-**Understand:** You are a product manager and currently leading a team to develop a new product. Unfortunately, the latest version of your product fails the quality check. Since each version is developed based on the previous version, all the versions after a bad version are also bad. Given `n` versions `[1, 2, ..., n]` and an API `bool isBadVersion(version)` which returns whether `version` is bad, find the first bad version.
+**Understand:** You are a product manager with n versions [1, 2, ..., n]. All versions after a bad version are also bad. Given an API `bool isBadVersion(version)`, find the first bad version while minimizing API calls.
 
-**Match:** This is a classic Binary Search problem. Since all versions after the first bad version are also bad, we can use binary search to efficiently locate the first bad version without checking every version linearly.
+**Match:** This is a Modified Binary Search problem, specifically a left boundary search. The versions form a pattern: [good, good, ..., good, bad, bad, ..., bad]. We need to find the transition point from good to bad.
 
 **Plan:**
-1. Initialize two pointers: `left = 1` and `right = n`
-2. Use binary search to narrow down the search range
-3. When we find a bad version, it could be the first bad version or there might be earlier bad versions
-4. When we find a good version, the first bad version must be to the right
-5. Continue until we find the exact first bad version
+1. Use binary search on the version range [1, n]
+2. When isBadVersion(mid) returns true, search left for earlier bad versions
+3. When isBadVersion(mid) returns false, search right for bad versions
+4. Continue until we find the leftmost bad version
 
 **Implement:** See the code section below.
 
 **Review:**
-- Ensure we handle the API call efficiently (minimize calls)
-- Consider edge cases like when the first version is bad
-- Verify the search logic correctly identifies the first bad version
+- Ensure we minimize API calls with O(log n) solution
+- Verify boundary conditions when first/last version is bad
+- Handle potential integer overflow in mid calculation
+- Test with edge cases like n=1
 
 **Evaluate:**
-- Time: O(log n) - we eliminate half of the search space each iteration
+- Time: O(log n) - binary search eliminates half the search space each iteration
 - Space: O(1) - only using constant extra space
 
-## ☀️ Why This Is a Binary Search Problem
+## ☀️ Why This Is a Modified Binary Search Problem
 
-The key insight is that bad versions form a contiguous suffix of the array:
-- All versions from the first bad version onward are bad
-- All versions before the first bad version are good
-- This creates a sorted property: `[Good, Good, ..., Good, Bad, Bad, ..., Bad]`
+This problem has the perfect structure for binary search:
+- **Sorted property**: Versions have a clear order [1, 2, ..., n]
+- **Monotonic property**: Once a version is bad, all subsequent versions are bad
+- **Boundary search**: We need to find the transition point from good to bad
+- **Search space reduction**: Each comparison eliminates half the remaining versions
 
-This allows us to:
-- Use binary search to find the boundary between good and bad versions
-- Eliminate half the search space with each API call
-- Achieve O(log n) time complexity instead of O(n) linear search
+Key insights:
+- This is NOT a standard "find target" binary search
+- This IS a "find first occurrence" boundary search
+- Similar to LeetCode 34's findLeft function
+- We're looking for the leftmost position where isBadVersion returns true
 
 ## ☀️ Edge Case Notes
 
 | Input | Description | Expected Output |
 |-------|-------------|-----------------|
-| `n = 5, first bad = 4` | Normal case with bad versions at the end | `4` |
-| `n = 1, first bad = 1` | Single version that is bad | `1` |
-| `n = 5, first bad = 1` | First version is bad (all versions bad) | `1` |
-| `n = 5, first bad = 5` | Last version is bad (only last version bad) | `5` |
-| `n = 2, first bad = 1` | Two versions, first is bad | `1` |
-| `n = 2, first bad = 2` | Two versions, second is bad | `2` |
+| `n = 5, bad = 4` | Standard case with bad version in middle | `4` |
+| `n = 1, bad = 1` | Single version, it's bad | `1` |
+| `n = 10, bad = 1` | First version is bad | `1` |
+| `n = 10, bad = 10` | Last version is bad | `10` |
+| `n = 100, bad = 50` | Bad version exactly in middle | `50` |
+| `n = 2^31-1, bad = large` | Maximum constraint test | `large` |
 
 These test:
-- Boundary conditions (first/last version being bad)
-- Single-element input
-- Different positions of the first bad version
-- Minimal input sizes
+- Boundary positions (first, last, middle)
+- Single element case
+- Large input handling
+- Various bad version positions
+- Integer overflow prevention
 
 ## ☀️ Code
 
-### Solution 1: Binary Search (Lower Bound Template)
-**Time: O(log n) → We eliminate half of the search space in each iteration**  
-**Space: O(1) → Only using constant extra space for pointers**
+### Solution 1: Linear Search (Naive Approach)
+**Time: O(n) → May need to check every version**  
+**Space: O(1) → Only using constant extra space**
 
 ```python
-# The isBadVersion API is already defined for you.
-# def isBadVersion(version: int) -> bool:
-
 class Solution:
     def firstBadVersion(self, n: int) -> int:
-        left = 1
-        right = n
+        """
+        Approach: Linear search from version 1 to n
         
-        while left < right:
-            mid = left + (right - left) // 2
+        This approach is straightforward but inefficient.
+        It doesn't utilize the sorted property of the problem.
+        """
+        for version in range(1, n + 1):
+            if isBadVersion(version):
+                return version
+        
+        return n  # Should never reach here
+```
+
+### Solution 2: Binary Search with Left Boundary Template (Optimal)
+**Time: O(log n) → Binary search eliminates half search space each iteration**  
+**Space: O(1) → Only using constant extra space**
+
+```python
+class Solution:
+    def firstBadVersion(self, n: int) -> int:
+        """
+        Approach: Binary search to find the first bad version
+        
+        Key Insight:
+        - This is a left boundary search problem
+        - Use the same template as LeetCode 34 (Find First and Last Position)
+        - When we find a bad version, continue searching left for earlier bad versions
+        """
+        left, right = 1, n
+        
+        while left <= right:
+            mid = left + (right - left) // 2  # Prevent overflow
             
             if isBadVersion(mid):
-                # First bad version is at mid or before mid
-                right = mid
+                # Found a bad version, but search left for the first one
+                right = mid - 1
             else:
-                # First bad version is after mid
+                # Current version is good, first bad version is to the right
                 left = mid + 1
         
-        # When left == right, we found the first bad version
+        # When loop ends, left points to the first bad version
         return left
 ```
 
-### Solution 2: Binary Search with Record and Continue (Alternative Approach)
-**Time: O(log n) → Same time complexity but may require more iterations**  
-**Space: O(1) → Only using constant extra space for pointers**
+### Solution 3: Alternative Binary Search Template
+**Time: O(log n) → Binary search eliminates half search space each iteration**  
+**Space: O(1) → Only using constant extra space**
 
 ```python
-# The isBadVersion API is already defined for you.
-# def isBadVersion(version: int) -> bool:
-
 class Solution:
     def firstBadVersion(self, n: int) -> int:
         """
-        Find the first bad version using binary search with an 'ans' variable.
-        - Keep a candidate 'ans' whenever we see a bad version.
-        - Then continue searching on the left side to ensure it's the first bad.
+        Alternative binary search template using while left < right
         
-        Time Complexity:  O(log n)
-        Space Complexity: O(1)
+        Note: This template requires different boundary handling
         """
         left, right = 1, n
-        ans = n  # Problem guarantees there is at least one bad version.
+        
+        while left < right:  # No equal sign
+            mid = left + (right - left) // 2
+            
+            if isBadVersion(mid):
+                # mid might be the first bad version, so don't exclude it
+                right = mid  # Not mid - 1
+            else:
+                # mid is definitely not the first bad version
+                left = mid + 1
+        
+        # When loop ends, left == right, pointing to first bad version
+        return left
+```
+
+### Solution 4: Binary Search with Recording (Consistent with LeetCode 34)
+**Time: O(log n) → Binary search eliminates half search space each iteration**  
+**Space: O(1) → Only using constant extra space**
+
+```python
+class Solution:
+    def firstBadVersion(self, n: int) -> int:
+        """
+        Binary search with explicit recording of found bad versions
+        This style is consistent with LeetCode 34 approach
+        """
+        left, right = 1, n
+        first_bad = -1
         
         while left <= right:
-            # Middle index; avoids overflow in languages with fixed int width
             mid = left + (right - left) // 2
-            # Call the API exactly once per loop and store the result
-            bad = isBadVersion(mid)
             
-            if bad:
-                # mid is a bad version; it could be the first bad
-                ans = mid
-                # Exclude mid and everything to its right; continue searching left
-                right = mid - 1
+            if isBadVersion(mid):
+                first_bad = mid  # Record this bad version
+                right = mid - 1  # Continue searching left for earlier ones
             else:
-                # mid is good; the first bad must be to the right
-                left = mid + 1
-                
-        return ans
+                left = mid + 1   # Search right for bad versions
+        
+        return first_bad
 ```
 
 ## ☀️ Notes
 
-**Solution 1 (Lower Bound Template):**
-- Uses `while left < right` to converge pointers to the answer
-- When finding a bad version, keeps it as a candidate by setting `right = mid`
-- When finding a good version, eliminates it by setting `left = mid + 1`
-- The final `left` naturally points to the first bad version
+**Key Algorithm Components:**
+- **Left boundary search**: Find the first occurrence of a condition becoming true
+- **Monotonic property**: Exploit the fact that bad versions are consecutive from some point
+- **API minimization**: Binary search reduces calls from O(n) to O(log n)
+- **Overflow prevention**: Use `left + (right - left) // 2` instead of `(left + right) // 2`
 
-**Solution 2 (Record and Continue):**
-- Uses `while left <= right` with an `ans` variable to track the best candidate
-- Records every bad version found and continues searching for earlier ones
-- More intuitive approach but may require additional iterations
+**Critical Insight:**
+This problem is essentially finding the boundary between two regions: good versions and bad versions. The binary search efficiently narrows down to this transition point by eliminating half the search space in each iteration.
+
+## ☀️ Binary Search Logic Explained
+
+```
+Versions: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+Status:   [G, G, G, B, B, B, B, B, B, B ]  (G=Good, B=Bad)
+Target: Find first B (position 4)
+
+Binary Search Process:
+1. Check middle (5): Bad → search left half for earlier bad
+2. Check middle of left (2): Good → search right for first bad  
+3. Check middle of remaining (4): Bad → this is our answer
+```
 
 ## ☀️ Coding Walkthrough Script
 
-**For Solution 1:**
-"I'll use the lower bound binary search template to find the first bad version. I initialize left to 1 and right to n, representing the full range of versions.
-I use a while loop with the condition left less than right, which ensures the pointers converge to a single position.
-In each iteration, I calculate the middle index using left plus right minus left divided by 2 to prevent overflow.
-I call the isBadVersion API once per iteration. If the middle version is bad, the first bad version could be at this position or earlier, so I set right to mid to keep this position as a candidate.
-If the middle version is good, the first bad version must be to the right, so I set left to mid plus 1 to eliminate the left half including mid.
-When the loop ends, left and right converge to the same position, which is guaranteed to be the first bad version."
+"I need to find the first bad version while minimizing API calls, which suggests using binary search.
+The key insight is that this forms a sorted pattern: all good versions come before all bad versions. I'm looking for the boundary - the first position where the condition changes from false to true.
+I'll use binary search on the range [1, n]. For each middle version, I'll call isBadVersion:
+If it returns true, I've found a bad version, but I need to check if there's an earlier bad version, so I'll search the left half.
+If it returns false, the first bad version must be to the right, so I'll search the right half.
+I'll continue this process until the search space is exhausted. At that point, my left pointer will be positioned at the first bad version.
+This approach gives me O(log n) API calls instead of O(n), which significantly minimizes the number of calls as required."
 
 ## ☀️ Solution Comparison
 
-| Method | Time Complexity | Space Complexity | Loop Condition | Notes |
-|--------|----------------|------------------|----------------|-------|
-| Linear Search | O(n) | O(1) | N/A | Brute force; calls API n times in worst case |
-| Lower Bound Template | O(log n) | O(1) | `left < right` | **Recommended**; pointers converge naturally |
-| Record and Continue | O(log n) | O(1) | `left <= right` | Intuitive but may need more iterations |
+| Method | Time Complexity | Space Complexity | API Calls | Key Strategy | Notes |
+|--------|----------------|------------------|-----------|--------------|-------|
+| Linear Search | O(n) | O(1) | O(n) | Check versions sequentially | Simple but inefficient |
+| Binary Search (Template 1) | O(log n) | O(1) | O(log n) | Left boundary search | **Recommended**; consistent with LeetCode 34 |
+| Binary Search (Template 2) | O(log n) | O(1) | O(log n) | Alternative boundary search | Valid but different boundary handling |
+| Binary Search (Recording) | O(log n) | O(1) | O(log n) | Explicit recording approach | Consistent with recording pattern |
 
-## ☀️ Binary Search Insights
+## ☀️ Binary Search Boundary Insights
 
-- **Problem Pattern:** Finding the first position where a condition becomes true
-- **Key Observation:** Bad versions form a contiguous suffix, creating a sorted property
-- **Template Choice:** Lower bound template (`while left < right`) is ideal for "first occurrence" problems
-- **API Efficiency:** Both solutions minimize API calls to O(log n)
-- **Convergence Property:** In the lower bound template, the search space shrinks until left equals right, pointing to the answer
+- **Prerequisites:** Monotonic property (good versions followed by bad versions)
+- **Core insight:** Find transition point between two distinct regions
+- **Template choice:** Use consistent boundary search template across problems
+- **API efficiency:** Binary search minimizes expensive API calls
+- **Boundary guarantee:** Left pointer converges to first bad version
+- **Overflow safety:** Always use safe mid calculation for large inputs
 
-**Note:** Solution 1 is the most recommended approach using the `while left < right` template, which is optimal for finding "the first position that satisfies a condition". Solution 2 demonstrates a "record and continue" strategy but typically requires more iterations. Use Solution 1 in interviews for better efficiency.
+**Mathematical Guarantee:** Since versions form a monotonic sequence (good then bad), binary search will correctly identify the transition point in logarithmic time, minimizing API calls while guaranteeing the correct first bad version.
+
+**Note:** Solution 2 is recommended for its consistency with other boundary search problems like LeetCode 34. The template `while left <= right` with appropriate boundary updates provides a reliable pattern for similar problems.
