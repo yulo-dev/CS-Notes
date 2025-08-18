@@ -10,7 +10,6 @@ and eats k bananas from that pile. If the pile has less than k bananas, she eats
 and will not eat any more bananas during this hour.
 
 Koko likes to eat slowly but still wants to finish eating all the bananas before the guards return.
-
 Return the minimum integer k such that she can eat all the bananas within h hours.
 
 Example 1:
@@ -34,7 +33,7 @@ Constraints:
 import math
 from typing import List
 
-# Solution 1: Linear Search (Naive Approach)
+# Solution 1: Brute Force (Naive Approach)
 # Time: O(max(piles) * n) → Try every possible speed from 1 to max(piles)
 # Space: O(1) → Only using constant extra space
 class Solution1:
@@ -44,6 +43,12 @@ class Solution1:
         
         This approach is straightforward but inefficient for large inputs.
         We test every possible speed until we find the minimum one that works.
+        
+        Logic:
+        - Speed must be at least 1 (eat something each hour)
+        - Speed never needs to exceed max(piles) (largest pile size)
+        - For each speed, calculate total hours needed
+        - Return first speed that allows finishing within h hours
         """
         def calculate_hours(speed: int) -> int:
             """Calculate total hours needed at given eating speed"""
@@ -68,146 +73,41 @@ class Solution1:
 class Solution2:
     def minEatingSpeed(self, piles: List[int], h: int) -> int:
         """
-        Approach: Binary search on the eating speed
+        Approach: Binary Search on Answer (BSOA) - Standard Template
         
         Key Insights:
         1. Speed range: [1, max(piles)] - minimum 1, maximum is largest pile
         2. Monotonic property: if speed k works, then k+1, k+2... also work
         3. We want the minimum speed that works, so search for left boundary
         4. For each speed, calculate total hours needed and compare with h
+        
+        Binary Search Template:
+        - while left < right: ensures convergence to single answer
+        - right = mid: when condition met, try smaller values
+        - left = mid + 1: when condition not met, need larger values
+        - return left: guaranteed to be minimum valid answer
         """
-        def calculate_hours(speed: int) -> int:
-            """Calculate total hours needed at given eating speed"""
-            total_hours = 0
-            for pile in piles:
-                # Each pile takes ceil(pile/speed) hours to finish
-                # Using math.ceil or integer division trick: (pile + speed - 1) // speed
-                total_hours += math.ceil(pile / speed)
-            return total_hours
-        
-        left, right = 1, max(piles)
-        result = right  # Initialize to maximum possible speed
-        
-        while left <= right:
-            mid = left + (right - left) // 2
-            hours_needed = calculate_hours(mid)
-            
-            if hours_needed <= h:
+        left = 1           # Minimum possible eating speed
+        right = max(piles) # Maximum needed eating speed
+
+        while left < right:
+            mid = left + (right - left) // 2  # Avoid overflow
+
+            # Calculate total hours needed at speed 'mid'
+            hours = 0
+            for p in piles:
+                # Ceiling division: ceil(p/mid) = (p + mid - 1) // mid
+                # This avoids floating point operations
+                hours += (p + mid - 1) // mid
+
+            if hours <= h:
                 # This speed works, try to find a smaller one
-                result = mid
-                right = mid - 1
+                right = mid
             else:
                 # This speed is too slow, need faster speed
                 left = mid + 1
-        
-        return result
 
-
-# Solution 3: Binary Search with Optimized Calculation (Alternative)
-# Time: O(n * log(max(piles))) → Binary search on speed range
-# Space: O(1) → Only using constant extra space
-class Solution3:
-    def minEatingSpeed(self, piles: List[int], h: int) -> int:
-        """
-        Alternative binary search implementation using integer division trick
-        
-        Instead of math.ceil(pile / speed), we use (pile + speed - 1) // speed
-        This avoids floating point operations and is slightly more efficient.
-        """
-        def can_finish_in_time(speed: int) -> bool:
-            """Check if Koko can finish all bananas in h hours at given speed"""
-            total_hours = 0
-            for pile in piles:
-                # Ceiling division without floating point: (a + b - 1) // b
-                total_hours += (pile + speed - 1) // speed
-                if total_hours > h:  # Early termination optimization
-                    return False
-            return True
-        
-        left, right = 1, max(piles)
-        
-        while left < right:
-            mid = left + (right - left) // 2
-            
-            if can_finish_in_time(mid):
-                # This speed works, try smaller speeds
-                right = mid
-            else:
-                # This speed doesn't work, try larger speeds
-                left = mid + 1
-        
-        return left
-
-
-# Solution 4: Binary Search with Range Optimization
-# Time: O(n * log(max(piles))) → Binary search on speed range
-# Space: O(1) → Only using constant extra space
-class Solution4:
-    def minEatingSpeed(self, piles: List[int], h: int) -> int:
-        """
-        Optimized approach with better initial range estimation
-        
-        We can sometimes reduce the search range by calculating bounds more intelligently.
-        """
-        def calculate_hours(speed: int) -> int:
-            return sum(math.ceil(pile / speed) for pile in piles)
-        
-        # Better lower bound: total_bananas / h (minimum average speed needed)
-        total_bananas = sum(piles)
-        left = math.ceil(total_bananas / h)
-        right = max(piles)
-        
-        # Edge case: if we have more hours than piles, minimum speed is 1
-        left = max(1, left)
-        
-        result = right
-        
-        while left <= right:
-            mid = left + (right - left) // 2
-            
-            if calculate_hours(mid) <= h:
-                result = mid
-                right = mid - 1
-            else:
-                left = mid + 1
-        
-        return result
-
-
-# Solution 5: Ternary Search (Alternative Approach - Educational)
-# Time: O(n * log(max(piles))) → Ternary search on speed range
-# Space: O(1) → Only using constant extra space
-class Solution5:
-    def minEatingSpeed(self, piles: List[int], h: int) -> int:
-        """
-        Ternary search approach (educational purpose)
-        
-        Since the function is monotonic, we could use ternary search,
-        but binary search is more standard and equally efficient for this problem.
-        """
-        def calculate_hours(speed: int) -> int:
-            return sum(math.ceil(pile / speed) for pile in piles)
-        
-        left, right = 1, max(piles)
-        
-        while right - left > 2:
-            mid1 = left + (right - left) // 3
-            mid2 = right - (right - left) // 3
-            
-            if calculate_hours(mid1) <= h:
-                right = mid1
-            elif calculate_hours(mid2) > h:
-                left = mid2
-            else:
-                left = mid1
-                right = mid2
-        
-        # Check remaining candidates
-        for speed in range(left, right + 1):
-            if calculate_hours(speed) <= h:
-                return speed
-        
-        return right
+        return left  # Minimum valid eating speed
 
 
 """
@@ -216,58 +116,60 @@ Key Insights and Analysis:
 1. Problem Classification:
    - Binary Search on Answer (BSOA)
    - Optimization problem with monotonic property
-   - Resource allocation under time constraints
+   - Classic "minimize the maximum" pattern
 
-2. Core Insight - Monotonic Property:
-   - If speed k allows finishing in h hours, then k+1, k+2... also work
+2. Why Binary Search Works:
+   - Monotonic property: if speed k allows finishing in h hours, then k+1, k+2... also work
    - If speed k doesn't work, then speeds 1, 2, ..., k-1 also don't work
-   - This creates a clear binary search condition
+   - This creates a clear binary search condition: FFFF...TTTTT pattern
 
 3. Speed Range Analysis:
    - Minimum speed: 1 banana per hour (must eat at least something)
-   - Maximum speed: max(piles) (never need to eat faster than largest pile)
-   - Alternative lower bound: ceil(total_bananas / h) for better optimization
+   - Maximum speed: max(piles) bananas per hour (never need faster than largest pile)
+   - Search space: [1, max(piles)]
 
-4. Time Calculation:
+4. Time Calculation Logic:
    - For each pile of size p and speed k: time = ceil(p/k) hours
+   - Why ceiling? If pile has p bananas and speed is k:
+     * If p <= k: takes 1 hour (eat entire pile)
+     * If p > k: takes ceil(p/k) hours (partial pile each hour except last)
    - Total time = sum of individual pile times
-   - Must be <= h for the speed to be valid
 
-5. Implementation Techniques:
-   - Ceiling division: math.ceil(a/b) or (a + b - 1) // b
-   - Early termination in validation function
-   - Better initial bounds for optimization
+5. Ceiling Division Trick:
+   - math.ceil(a/b) = (a + b - 1) // b
+   - Avoids floating point arithmetic
+   - Example: ceil(7/3) = 3, (7 + 3 - 1) // 3 = 9 // 3 = 3
 
-6. Why This is BSOA (Binary Search on Answer):
-   - We're searching for the minimum valid answer (speed)
-   - The answer space has a clear range [1, max(piles)]
-   - The validity function is monotonic
-   - We want the leftmost (minimum) valid answer
+6. Template Choice:
+   - while left < right vs while left <= right
+   - left < right: converges to single answer, cleaner logic
+   - left <= right: needs result variable, more verbose
 
-7. Common Mistakes to Avoid:
+7. Common Mistakes:
    - Using floor division instead of ceiling for time calculation
-   - Not handling the case where pile < speed correctly
-   - Incorrect binary search boundary conditions
-   - Off-by-one errors in the search range
+   - Incorrect boundary updates (infinite loops)
+   - Off-by-one errors in search range
 
-8. Optimization Opportunities:
-   - Better lower bound calculation
-   - Early termination in validation
-   - Integer arithmetic instead of floating point
+8. Related BSOA Problems:
+   - LeetCode 410: Split Array Largest Sum
+   - LeetCode 1011: Capacity To Ship Packages Within D Days
+   - LeetCode 1283: Find Smallest Divisor Given Threshold
+   - LeetCode 2064: Minimized Maximum Products Distributed
 
-9. Related Problems (BSOA Pattern):
-   - Minimum time to complete trips
-   - Capacity to ship packages within D days
-   - Minimum speed to arrive on time
-   - Allocate mailboxes
+9. 
+   - Start with brute force to show understanding
+   - Identify monotonic property: "if k works, then k+1 works too"
+   - Implement binary search with proper template
+   - Explain ceiling division optimization
+   - Discuss time complexity improvement: O(max(piles) * n) → O(n * log(max(piles)))
 
-10. 
-    - Start with brute force (Solution 1) to show understanding
-    - Identify the monotonic property
-    - Implement binary search (Solution 2)
-    - Discuss optimizations if time permits
+10. Edge Cases:
+    - Single pile: works with any reasonable speed
+    - h equals number of piles: each pile gets exactly 1 hour
+    - Large piles with small h: requires high eating speed
+    - Many small piles: low eating speed sufficient
 
 Solution Recommendation:
-- Solution 2 is the standard interview answer
-- Solution 3 shows understanding of integer arithmetic optimization
+- Solution 1: Good for explaining the problem and brute force approach
+- Solution 2: Standard interview answer using BSOA template
 """
