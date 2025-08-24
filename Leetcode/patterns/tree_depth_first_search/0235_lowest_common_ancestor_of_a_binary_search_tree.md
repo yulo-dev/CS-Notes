@@ -82,7 +82,35 @@ class Solution:
         return left if left else right
 ```
 
-### Solution 2: BST Property Three-Way Decision (Classic Solution)
+### Solution 2: Iterative BST Three-Way Decision (Classic Solution)
+**Time: O(h) → Best case O(log n), worst case O(n) for skewed tree**  
+**Space: O(1) → No recursion, only constant extra space**
+
+```python
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        current = root
+        
+        while current:
+            # If both target nodes are smaller than the current node,
+            # that means they must be in the left subtree.
+            if p.val < current.val and q.val < current.val:
+                current = current.left
+            
+            # If both target nodes are greater than the current node,
+            # they must be in the right subtree.
+            elif p.val > current.val and q.val > current.val:
+                current = current.right
+            
+            # If p and q are on different sides of the current node (or one is equal to current),
+            # then the current node is their lowest common ancestor.
+            else:
+                return current
+        
+        return None  # Should never reach here for valid input
+```
+
+### Solution 3: Recursive BST Approach (Advanced Solution)
 **Time: O(h) → Best case O(log n), worst case O(n) for skewed tree**  
 **Space: O(h) → Recursion stack depth equals tree height**
 
@@ -105,29 +133,6 @@ class Solution:
             return root
 ```
 
-### Solution 3: Iterative BST Approach (Advanced Solution)
-**Time: O(h) → Best case O(log n), worst case O(n) for skewed tree**  
-**Space: O(1) → No recursion, only constant extra space**
-
-```python
-class Solution:
-    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
-        current = root
-        
-        while current:
-            # If both nodes are smaller, go left
-            if p.val < current.val and q.val < current.val:
-                current = current.left
-            # If both nodes are larger, go right
-            elif p.val > current.val and q.val > current.val:
-                current = current.right
-            # If nodes are on different sides or one equals current, found LCA
-            else:
-                return current
-        
-        return None  # Should never reach here for valid input
-```
-
 ## ☀️ Notes
 
 **Key Algorithm Components:**
@@ -141,12 +146,18 @@ The power of this BST-specific solution lies in its ability to make definitive d
 
 ## ☀️ Coding Walkthrough Script
 
-I'll solve this by leveraging the fundamental BST property: values in left subtree are smaller, values in right subtree are larger.
+"I'll solve this by leveraging the fundamental BST property: values in left subtree are smaller, values in right subtree are larger.
+
 My approach uses a three-way decision structure. At each node, I compare both target values with the current node's value.
+
 If both p and q are smaller than the current node, I know they must both be in the left subtree, so I recurse left.
+
 If both p and q are larger than the current node, they must both be in the right subtree, so I recurse right.
+
 The key insight is the else case: if p and q are on different sides of the current node, or if one of them equals the current node, then the current node is their LCA. This is because it's the first point where their paths diverge.
+
 This approach is much more efficient than the generic binary tree LCA algorithm because I only traverse a single path from root to LCA, rather than potentially exploring multiple subtrees.
+
 The time complexity is O(h) where h is the tree height, giving us O(log n) performance for balanced BSTs, which is a significant improvement over O(n) for generic approaches."
 
 ## ☀️ Solution Comparison
@@ -154,8 +165,8 @@ The time complexity is O(h) where h is the tree height, giving us O(log n) perfo
 | Method | Time Complexity | Space Complexity | Key Strategy | Notes |
 |--------|----------------|------------------|--------------|-------|
 | Generic Tree LCA | O(n) | O(h) | Explore both subtrees | Ignores BST property |
-| BST Three-Way Decision | O(h) | O(h) | Value-based direction choice | **Recommended**; optimal for BST |
-| BST Iterative | O(h) | O(1) | Iterative single-path traversal | Space-optimal alternative |
+| Iterative BST | O(h) | O(1) | Value-based direction with iteration | **Recommended**; optimal for BST |
+| Recursive BST | O(h) | O(h) | Value-based direction with recursion | Clean but uses call stack |
 
 ## ☀️ BST LCA Optimization Insights
 
@@ -167,4 +178,4 @@ The time complexity is O(h) where h is the tree height, giving us O(log n) perfo
 
 **Mathematical Guarantee:** Since BST maintains the property that left < root < right, the first node encountered where p and q fall on different sides (or one equals the node) is mathematically guaranteed to be their lowest common ancestor.
 
-**Note:** Solution 2 (BST Three-Way Decision) is the most recommended approach for interviews due to its optimal BST-specific performance, intuitive decision logic, and clean three-case structure. This solution perfectly demonstrates understanding of how to leverage data structure properties for algorithmic optimization. The three-way decision pattern (both left, both right, divergence) is natural and easy to explain during interviews.
+**Note:** Solution 2 (Iterative BST) is the most recommended approach due to its optimal space complexity O(1), intuitive three-way decision logic, and elimination of recursion overhead. This solution perfectly demonstrates understanding of how to leverage BST properties while writing space-efficient code. The iterative approach is particularly valuable for BST problems where the path from root to target is predictable, making recursion unnecessary.
