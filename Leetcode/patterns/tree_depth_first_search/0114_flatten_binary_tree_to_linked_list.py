@@ -42,7 +42,7 @@ class Solution:
             current.right = TreeNode(values[i])
             current = current.right
 
-# Solution 2: Recursive DFS - Modify Tree Structure In-Place (Classic Solution)
+# Solution 2: Reverse Postorder Traversal (Classic Solution)
 # Time: O(n) → Visit each node exactly once
 # Space: O(h) → Recursion stack depth equals tree height
 class Solution2:
@@ -50,32 +50,21 @@ class Solution2:
         """
         Do not return anything, modify root in-place instead.
         """
+        self.prev = None
+
         def dfs(node):
-            """Returns the tail of the flattened subtree"""
             if not node:
-                return None
-            
-            # Store original left and right children
-            left_child = node.left
-            right_child = node.right
-            
-            # Clear left pointer (required for linked list format)
+                return
+
+            # Traverse in reverse preorder: right -> left -> root
+            dfs(node.right)
+            dfs(node.left)
+
+            # Process current node: link it to previously processed node
+            node.right = self.prev
             node.left = None
-            
-            # Recursively flatten left and right subtrees
-            left_tail = dfs(left_child)
-            right_tail = dfs(right_child)
-            
-            # Connect flattened left subtree to current node's right
-            if left_child:
-                node.right = left_child
-                # Connect left subtree tail to flattened right subtree
-                left_tail.right = right_child
-            
-            # Return the actual tail of the flattened tree
-            # Priority: right_tail > left_tail > current node
-            return right_tail if right_tail else (left_tail if left_tail else node)
-        
+            self.prev = node
+
         dfs(root)
 
 # Solution 3: Advanced - Morris-like Iterative Approach
@@ -190,13 +179,13 @@ def test_solutions():
 
 # Strategy:
 # 1. Start with Solution 1 (Brute Force) 
-# 2. Optimize to Solution 2 (Recursive DFS) 
+# 2. Optimize to Solution 2 (Reverse Postorder) 
 # 3. If time permits, mention Solution 3 (Morris-like) as space-optimal solution
 #
-# Key insight: Flatten means convert to right-skewed tree following preorder sequence
-# Solution 2 is preferred:
-# - In-place modification without extra storage for values
-# - Clear recursive structure that handles subtree connections properly
-# - Returns tail information needed for proper linking
-# - Natural divide-and-conquer approach that's easy to explain
-# - Optimal time complexity with reasonable space usage
+# Key insight: Use reverse postorder (right->left->root) to build flattened list backwards
+# Why Solution 2 (your approach) is preferred:
+# - Elegant reverse traversal that naturally builds the result
+# - Simple linking logic: each node points to previously processed node
+# - No need to track tails or handle complex subtree connections
+# - Clean and intuitive: process in reverse order, link as we go
+# - Minimal code with maximum clarity
