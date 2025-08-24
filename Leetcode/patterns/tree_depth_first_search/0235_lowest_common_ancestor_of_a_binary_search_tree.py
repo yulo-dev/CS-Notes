@@ -34,10 +34,36 @@ class Solution:
         # Otherwise, return whichever subtree found a target node
         return left if left else right
 
-# Solution 2: Leveraging BST Property - Recursive 
+# Solution 2: Iterative BST Three-Way Decision (Classic Solution)
+# Time: O(h) → Best case O(log n), worst case O(n) for skewed tree
+# Space: O(1) → No recursion, only constant extra space
+
+class Solution2:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        current = root
+        
+        while current:
+            # If both target nodes are smaller than the current node,
+            # that means they must be in the left subtree.
+            if p.val < current.val and q.val < current.val:
+                current = current.left
+            
+            # If both target nodes are greater than the current node,
+            # they must be in the right subtree.
+            elif p.val > current.val and q.val > current.val:
+                current = current.right
+            
+            # If p and q are on different sides of the current node (or one is equal to current),
+            # then the current node is their lowest common ancestor.
+            else:
+                return current
+        
+        return None  # Should never reach here for valid input
+
+# Solution 3: Recursive BST Approach (Advanced Solution)
 # Time: O(h) → Best case O(log n), worst case O(n) for skewed tree
 # Space: O(h) → Recursion stack depth equals tree height
-class Solution2:
+class Solution3:
     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
         # If both target nodes are smaller than the current node,
         # that means they must be in the left subtree.
@@ -53,30 +79,6 @@ class Solution2:
         # then the current node is their lowest common ancestor.
         else:
             return root
-
-# Solution 3: Advanced - Iterative BST Approach
-# Time: O(h) → Best case O(log n), worst case O(n) for skewed tree
-# Space: O(1) → No recursion, only constant extra space
-class Solution3:
-    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
-        # Ensure p has smaller value than q for easier logic
-        if p.val > q.val:
-            p, q = q, p
-        
-        current = root
-        
-        while current:
-            # If current node value is between p and q (inclusive), it's the LCA
-            if p.val <= current.val <= q.val:
-                return current
-            # If both nodes are smaller, go left
-            elif q.val < current.val:
-                current = current.left
-            # If both nodes are larger, go right
-            else:
-                current = current.right
-        
-        return None  # Should never reach here for valid input
 
 # Alternative Solution 2: Using Range-Based Logic
 class Solution2_Alternative:
@@ -151,13 +153,13 @@ def test_solutions():
 
 # Strategy:
 # 1. Start with Solution 1 (Brute Force) - shows you understand generic LCA problem
-# 2. Optimize to Solution 2 (BST Recursive) - this leverages BST property effectively  
-# 3. If time permits, mention Solution 3 (BST Iterative) as space-optimal solution
+# 2. Optimize to Solution 2 (Iterative BST) - this is what they want to see most
+# 3. If time permits, mention Solution 3 (Recursive BST) as alternative approach
 #
 # Key insight: BST property allows us to determine search direction without exploring both subtrees
-# Why Solution 2 is preferred:
-# - Direct and intuitive logic based on value comparisons
-# - No need for value swapping or range checking
-# - Clear three-way decision structure that's easy to explain
-# - Leverages BST property to reduce search space significantly  
-# - Handles all cases naturally: nodes on same side, different sides, or one being ancestor
+# Solution 2 (iterative approach) is preferred:
+# - Optimal O(1) space complexity with no recursion overhead
+# - Direct and intuitive three-way decision logic based on value comparisons
+# - Clear single-path traversal that's easy to trace and debug
+# - Leverages BST property to reduce search space significantly
+# - Shows understanding of when recursion is unnecessary for predictable paths
