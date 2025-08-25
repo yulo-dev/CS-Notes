@@ -31,10 +31,9 @@ class Solution:
         
         return root
 
-# Solution 2: Optimized Recursive with Index Pointers (Classic Interview Solution)
+# Solution 2: Optimized Recursive with Index Pointers (Classic Solution)
 # Time: O(n) → Visit each element exactly once to create nodes
 # Space: O(log n) → Recursion stack depth for balanced tree
-# ★ This is the classic interview solution ★
 class Solution2:
     def sortedArrayToBST(self, nums: List[int]) -> Optional[TreeNode]:
         def build(left, right):
@@ -167,13 +166,13 @@ def test_solutions():
     single_tree = sol2.sortedArrayToBST([5])
     print(f"Single element: {inorder_traversal(single_tree)}")  # Should be [5]
 
-# Interview Strategy:
-# 1. Start with Solution 1 (Brute Force) - shows you understand the divide-and-conquer concept
-# 2. Optimize to Solution 2 (Index Pointers) - this is what they want to see most
+# Strategy:
+# 1. Start with Solution 1 (Brute Force) - understand the divide-and-conquer concept
+# 2. Optimize to Solution 2 (Index Pointers) 
 # 3. If time permits, mention Solution 3 (Iterative) as advanced alternative
 #
 # Key insight: Choose middle element as root to maintain height balance, then recursively build subtrees
-# Why Solution 2 is preferred:
+# Solution 2 is preferred:
 # - Optimal O(n) time complexity with no array slicing overhead
 # - Clean recursive divide-and-conquer approach
 # - Maintains height balance by always choosing middle element
