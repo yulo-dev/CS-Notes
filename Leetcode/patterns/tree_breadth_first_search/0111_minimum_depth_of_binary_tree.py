@@ -57,7 +57,7 @@ class Solution2:
                     queue.append((node.right, depth + 1))
 
 # Time: O(w) → Only processes nodes until first leaf level is found
-# Space: O(w) → Queue stores nodes level by level
+# Space: O(n) → Queue stores at most one level worth of nodes (up to n/2 in complete binary tree)
 class Solution3:
     def minDepth(self, root: Optional[TreeNode]) -> int:
         # BFS with explicit level counter - cleanest level-by-level approach
