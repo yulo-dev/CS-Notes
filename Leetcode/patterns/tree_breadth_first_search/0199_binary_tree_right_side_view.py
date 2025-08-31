@@ -42,7 +42,6 @@ class Solution:
 
 # Time: O(n) → Visit each node once in DFS traversal
 # Space: O(h) → O(n) worst case, where h is height of tree (balanced O(log n), skewed O(n))
-# ★ This is the classic interview solution ★
 class Solution2:
     def rightSideView(self, root: Optional[TreeNode]) -> List[int]:
         # DFS with right-first traversal - first node at each depth is rightmost
