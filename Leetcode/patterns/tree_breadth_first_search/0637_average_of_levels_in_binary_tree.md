@@ -6,9 +6,10 @@
 
 **Key Clarification Questions to Ask Interviewer:**
 1. "Should I return an empty array for a null root?"
-2. "How should I handle potential integer overflow when calculating sums for levels with many large values?"
-3. "Should the result be returned as floats, or is there a specific precision requirement?"
-4. "Are negative node values possible, and does this affect the calculation approach?"
+2. "Is O(n) time with O(w) space acceptable? Is recursion OK, or do you prefer iterative?"
+3. "Are negative node values possible, and does this affect the calculation approach?"
+4. "Output order is top-down by level, correct?"
+5. "Could the depth be large enough to risk stack overflow if I use recursion?"
 
 **Match:** This is a level-order processing problem where we need to compute aggregate statistics (averages) for each level.
 
