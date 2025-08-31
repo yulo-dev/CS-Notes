@@ -10,9 +10,9 @@ class TreeNode:
         self.val = val
         self.left = left
         self.right = right
-# BFS
+
 # Time: O(n) → Visit each node once to compare with corresponding node
-# Space: O(n) → Queue stores node pairs, up to O(w) pairs where w is max width
+# Space: O(w) → O(n) worst case, where w is max width of tree level
 class Solution:
     def isSameTree(self, p: Optional[TreeNode], q: Optional[TreeNode]) -> bool:
         # Iterative BFS approach using queue to store node pairs
@@ -38,9 +38,9 @@ class Solution:
             queue.append((n1.right, n2.right))    # Right children
         
         return True
-# DFS
+
 # Time: O(n) → Visit each node once in recursive calls
-# Space: O(h) → Recursion stack depth equals height of tree (O(log n) to O(n))
+# Space: O(h) → O(n) worst case, where h is height of tree (balanced O(log n), skewed O(n))
 
 class Solution2:
     def isSameTree(self, p: Optional[TreeNode], q: Optional[TreeNode]) -> bool:
@@ -60,9 +60,8 @@ class Solution2:
         return (self.isSameTree(p.left, q.left) and
                 self.isSameTree(p.right, q.right))
 
-# DFS
 # Time: O(n) → Visit each node once using preorder traversal
-# Space: O(h) → Recursion stack depth for tree traversal
+# Space: O(h) → O(n) worst case, where h is recursion stack depth
 class Solution3:
     def isSameTree(self, p: Optional[TreeNode], q: Optional[TreeNode]) -> bool:
         # Alternative DFS approach with explicit value comparison first
@@ -128,11 +127,9 @@ def test_solutions():
     print(f"Both null - DFS: {sol2.isSameTree(None, None)}")             # Expected: True
     print(f"One null - DFS: {sol2.isSameTree(TreeNode(1), None)}")       # Expected: False
 
-# Interview Strategy:
+# Strategy:
 # 1. Start with Solution 1 (BFS queue approach) 
-# 2. Optimize to Solution 2 (DFS recursion)
+# 2. Optimize to Solution 2 (DFS recursion) 
 # 3. If time permits, mention Solution 3 (DFS with helper) 
 #
 # Key insight: Same tree comparison uses Two-Tree Comparison Pattern with direct position mapping
-if __name__ == "__main__":
-    test_solutions()
