@@ -14,18 +14,18 @@ class Solution:
         res = []
 
         while queue:
-            level = []   # ← 每層要輸出的容器（換成鏈表etc.）
+            level = []   # ← 每層要輸出的容器（換成鏈表etc.）# dummy = ListNode(0); tail = dummy
             
             for _ in range(len(queue)):
                 node = queue.popleft()
-                level.append(node.val) # ← 這一行換成題目要的操作
+                level.append(node.val) # ← 這一行換成題目要的操作 # tail.next = ListNode(node.val); tail = tail.next
 
                 if node.left:
                     queue.append(node.left)
                 if node.right:
                     queue.append(node.right)
 
-            res.append(level # ← 每層結束時收集結果
+            res.append(level) # ← 每層結束時收集結果 # res.append(dummy.next)
         return res
 ```
 
