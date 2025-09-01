@@ -14,18 +14,18 @@ class Solution:
         res = []
 
         while queue:
-            level = []
+            level = []   # ← 每層要輸出的容器（換成鏈表etc.）
             
             for _ in range(len(queue)):
                 node = queue.popleft()
-                level.append(node.val)
+                level.append(node.val) # ← 這一行換成題目要的操作
 
                 if node.left:
                     queue.append(node.left)
                 if node.right:
                     queue.append(node.right)
 
-            res.append(level)
+            res.append(level # ← 每層結束時收集結果
         return res
 ```
 
