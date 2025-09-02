@@ -9,8 +9,6 @@
 
 from collections import deque
 
-NULL = "null"  # ← 若想用 '#', 改成 NULL = "#"
-
 class Codec:
     def serialize(self, root):
         if not root:            # 1) 空樹
@@ -26,10 +24,10 @@ class Codec:
                 q.append(node.left)     # 即使是 None 也要入隊
                 q.append(node.right)    # 目的：保留樹形狀
             else:                       # 5) 空位：用占位符表示
-                out.append(NULL)
+                out.append("null")
 
         # 6) 去掉尾端多餘的 "null"
-        while out and out[-1] == NULL:
+        while out and out[-1] == "null":
             out.pop()
 
         return "[" + ",".join(out) + ']'   # 7) 拼成 LeetCode 風格字串
